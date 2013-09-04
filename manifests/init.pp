@@ -96,12 +96,14 @@ class mongodb (
     require => Package['mongodb-10gen'],
   }
 
-  file {'/etc/init/mongodb.conf':
-    source => 'puppet:///modules/mongodb/etc/init/mongodb.conf',
-    owner  => 'root',
-    group  => 'root',
-    mode   => '0644',
-    notify => Service['mongodb'],
+  if $init == 'upstart' {
+    file {'/etc/init/mongodb.conf':
+      source => 'puppet:///modules/mongodb/etc/init/mongodb.conf',
+      owner  => 'root',
+      group  => 'root',
+      mode   => '0644',
+      notify => Service['mongodb'],
+    }
   }
 
   service { 'mongodb':
