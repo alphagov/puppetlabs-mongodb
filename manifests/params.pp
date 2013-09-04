@@ -16,6 +16,7 @@ class mongodb::params{
         'Debian': { $init = 'sysv' }
         'Ubuntu': { $init = 'upstart' }
       }
+      $expect = 'daemon'
       $source  = 'mongodb::sources::apt'
       $package = 'mongodb'
       $service = 'mongodb'

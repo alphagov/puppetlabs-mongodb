@@ -68,6 +68,7 @@ class mongodb (
   $profile         = undef,
   $slowms          = undef,
   $version         = installed,
+  $upstart_expect = $mongodb::params::expect,
 ) inherits mongodb::params {
 
   if $enable_10gen {
@@ -98,11 +99,11 @@ class mongodb (
 
   if $init == 'upstart' {
     file {'/etc/init/mongodb.conf':
-      source => 'puppet:///modules/mongodb/etc/init/mongodb.conf',
-      owner  => 'root',
-      group  => 'root',
-      mode   => '0644',
-      notify => Service['mongodb'],
+      content => template('mongodb/mongod.upstart.conf.erb'),
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0644',
+      notify  => Service['mongodb'],
     }
   }
 
