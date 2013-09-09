@@ -16,11 +16,37 @@ describe 'mongodb', :type => :class do
         should_not contain_class('mongodb::sources::apt')
         should_not contain_apt__source('10gen')
         should contain_package('mongodb-10gen').with({
-          :name => 'mongodb'
+          :name => 'mongodb',
+          :ensure => 'installed'
         })
-        should contain_file('/etc/mongod.conf')
+        should contain_file('/etc/mongodb.conf')
+        should_not contain_file('/etc/init/mongodb.conf')
         should contain_service('mongodb').with({
           :name => 'mongodb'
+        })
+      }
+    end
+
+    describe 'when requesting upstart' do
+      let :params do
+        { :init => 'upstart' }
+      end
+
+      it {
+        should contain_file('/etc/init/mongodb.conf')
+        should_not contain_file('/etc/init/mongodb.conf')
+          .with_content(/expect daemon/)
+      }
+    end
+
+    describe 'when specifying a version' do
+      let :params do
+        { :version => '2.0.9' }
+      end
+
+      it {
+        should contain_package('mongodb-10gen').with({
+          :ensure => '2.0.9'
         })
       }
     end
@@ -73,10 +99,33 @@ describe 'mongodb', :type => :class do
         should contain_package('mongodb-10gen').with({
           :name => 'mongodb'
         })
-        should contain_file('/etc/mongod.conf')
+        should contain_file('/etc/mongodb.conf')
+        should contain_file('/etc/init/mongodb.conf')
         should contain_service('mongodb').with({
           :name => 'mongodb'
         })
+      }
+    end
+
+    describe 'with no upstart expect' do
+      let :params do
+        { :upstart_expect => 'none' }
+      end
+
+      it {
+        should_not contain_file('/etc/init/mongodb.conf')
+          .with_content(/expect/)
+      }
+    end
+
+    describe 'with daemon upstart expect' do
+      let :params do
+        { :upstart_expect => 'daemon' }
+      end
+
+      it {
+        should contain_file('/etc/init/mongodb.conf')
+          .with_content(/expect daemon/)
       }
     end
 
@@ -143,7 +192,7 @@ describe 'mongodb', :type => :class do
         should contain_package('mongodb-10gen').with({
           :name => 'mongodb-server'
         })
-        should contain_file('/etc/mongod.conf')
+        should contain_file('/etc/mongodb.conf')
         should contain_service('mongodb').with({
           :name => 'mongod'
         })
@@ -160,7 +209,7 @@ describe 'mongodb', :type => :class do
         should contain_package('mongodb-10gen').with({
           :name => 'mongo-10gen-server'
         })
-        should contain_file('/etc/mongod.conf')
+        should contain_file('/etc/mongodb.conf')
         should contain_service('mongodb').with({
           :name => 'mongod'
         })
