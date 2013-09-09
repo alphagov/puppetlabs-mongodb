@@ -34,6 +34,7 @@ describe 'mongodb', :type => :class do
 
       it {
         should contain_file('/etc/init/mongodb.conf')
+        should_not contain_file('/etc/init/mongodb.conf')
           .with_content(/expect daemon/)
       }
     end
@@ -108,12 +109,23 @@ describe 'mongodb', :type => :class do
 
     describe 'with no upstart expect' do
       let :params do
-        { :upstart_expect => '' }
+        { :upstart_expect => 'none' }
       end
 
       it {
         should_not contain_file('/etc/init/mongodb.conf')
           .with_content(/expect/)
+      }
+    end
+
+    describe 'with daemon upstart expect' do
+      let :params do
+        { :upstart_expect => 'daemon' }
+      end
+
+      it {
+        should contain_file('/etc/init/mongodb.conf')
+          .with_content(/expect daemon/)
       }
     end
 

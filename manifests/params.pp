@@ -6,6 +6,7 @@ class mongodb::params{
       $package = 'mongodb-server'
       $service = 'mongod'
       $pkg_10gen = 'mongo-10gen-server'
+      $mongofork = true
     }
     'debian': {
       $locations = {
@@ -16,11 +17,11 @@ class mongodb::params{
         'Debian': { $init = 'sysv' }
         'Ubuntu': { $init = 'upstart' }
       }
-      $expect = 'daemon'
       $source  = 'mongodb::sources::apt'
       $package = 'mongodb'
       $service = 'mongodb'
       $pkg_10gen = 'mongodb-10gen'
+      $mongofork = false
     }
     default: {
       fail ("mongodb: ${::operatingsystem} is not supported.")

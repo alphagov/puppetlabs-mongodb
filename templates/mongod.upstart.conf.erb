@@ -9,7 +9,7 @@ pre-start script
     mkdir -p /var/log/mongodb/
 end script
 
-<% if @upstart_expect != '' -%>
+<% if @upstart_expect != 'none' -%>
 expect <%= @upstart_expect %>
 <% end -%>
 

@@ -37,7 +37,7 @@ class mongodb (
   $servicename     = $mongodb::params::service,
   $logpath         = '/var/log/mongodb/mongodb.log',
   $logappend       = true,
-  $mongofork       = true,
+  $mongofork       = $mongodb::params::mongofork,
   $port            = '27017',
   $dbpath          = '/var/lib/mongodb',
   $nojournal       = undef,
@@ -68,7 +68,7 @@ class mongodb (
   $profile         = undef,
   $slowms          = undef,
   $version         = installed,
-  $upstart_expect = $mongodb::params::expect,
+  $upstart_expect  = 'none',
 ) inherits mongodb::params {
 
   if $enable_10gen {
