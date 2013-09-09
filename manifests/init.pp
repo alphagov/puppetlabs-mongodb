@@ -37,7 +37,7 @@ class mongodb (
   $servicename     = $mongodb::params::service,
   $logpath         = '/var/log/mongodb/mongodb.log',
   $logappend       = true,
-  $mongofork       = true,
+  $mongofork       = $mongodb::params::mongofork,
   $port            = '27017',
   $dbpath          = '/var/lib/mongodb',
   $nojournal       = undef,
@@ -66,7 +66,9 @@ class mongodb (
   $smallfiles      = undef,
   $rest            = undef,
   $profile         = undef,
-  $slowms          = undef
+  $slowms          = undef,
+  $version         = installed,
+  $upstart_expect  = 'none',
 ) inherits mongodb::params {
 
   if $enable_10gen {
@@ -84,7 +86,7 @@ class mongodb (
 
   package { 'mongodb-10gen':
     name   => $package,
-    ensure => installed,
+    ensure => $version,
   }
 
   file { '/etc/mongodb.conf':
@@ -95,12 +97,14 @@ class mongodb (
     require => Package['mongodb-10gen'],
   }
 
-  file {'/etc/init/mongodb.conf':
-    source => 'puppet:///modules/mongodb/etc/init/mongodb.conf',
-    owner  => 'root',
-    group  => 'root',
-    mode   => '0644',
-    notify => Service['mongodb'],
+  if $init == 'upstart' {
+    file {'/etc/init/mongodb.conf':
+      content => template('mongodb/mongod.upstart.conf.erb'),
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0644',
+      notify  => Service['mongodb'],
+    }
   }
 
   service { 'mongodb':
