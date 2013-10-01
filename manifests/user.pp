@@ -1,10 +1,14 @@
+# == Define: mongodb::user
+#
+# Adds a user to Mongo authentication list with the provided
+# parameter. All users will be added to the 'admin' database.
 define mongodb::user (
+  $password,
   $db_host     = '127.0.0.1',
   $db_name     = 'test',
   $db_port     = '27017',
-  $ensure      = 'present'
+  $ensure      = 'present',
   $js_dir      = '/root/puppetlabs-mongodb',
-  $password,
   $roles       = '[]',
   ) {
 
