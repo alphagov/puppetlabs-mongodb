@@ -14,10 +14,10 @@ describe 'mongodb::user', :type => :define do
       it {
         should contain_file(path).with(
                  'ensure' => 'directory',
-                 'path'   => path,
-                 'owner'  => 'root',
                  'group'  => 'root',
-                 'mode'   => '0700')
+                 'mode'   => '0700',
+                 'owner'  => 'root',
+                 'path'   => path)
       }
     end
 
@@ -32,10 +32,10 @@ describe 'mongodb::user', :type => :define do
       it {
         should contain_file(some_new_path).with(
                  'ensure' => 'directory',
-                 'path'   => some_new_path,
-                 'owner'  => 'root',
                  'group'  => 'root',
-                 'mode'   => '0700')
+                 'mode'   => '0700',
+                 'owner'  => 'root',
+                 'path'   => some_new_path)
       }
     end
   end
@@ -51,12 +51,12 @@ describe 'mongodb::user', :type => :define do
 
       it {
         should contain_file(file).with(
+                 'content' => content,
                  'ensure'  => 'present',
-                 'path'    => "#{path}/#{file}",
-                 'owner'   => 'root',
                  'group'   => 'root',
                  'mode'    => '0600',
-                 'content' => content)
+                 'owner'   => 'root',
+                 'path'    => "#{path}/#{file}")
       }
     end
 
@@ -72,12 +72,12 @@ describe 'mongodb::user', :type => :define do
 
       it {
         should contain_file(file).with(
+                 'content' => content,
                  'ensure'  => 'present',
-                 'path'    => "#{path}/#{file}",
-                 'owner'   => 'root',
                  'group'   => 'root',
                  'mode'    => '0600',
-                 'content' => content)
+                 'owner'   => 'root',
+                 'path'    => "#{path}/#{file}")
       }
     end
   end
@@ -94,10 +94,10 @@ describe 'mongodb::user', :type => :define do
       it {
         should contain_exec(exec).with(
                  'command'     => "mongo 127.0.0.1:27017/test #{path}/#{file}",
-                 'require'     => 'Service[mongodb]',
-                 'subscribe'   => "File[#{file}]",
                  'path'        => ['/usr/bin', '/usr/sbin'],
-                 'refreshonly' => 'true')
+                 'refreshonly' => 'true',
+                 'require'     => 'Service[mongodb]',
+                 'subscribe'   => "File[#{file}]")
       }
     end
 
@@ -114,10 +114,10 @@ describe 'mongodb::user', :type => :define do
       it {
         should contain_exec(exec).with(
                  'command'     => "mongo 127.0.0.1:27017/#{database} #{path}/#{file}",
-                 'require'     => 'Service[mongodb]',
-                 'subscribe'   => "File[#{file}]",
                  'path'        => ['/usr/bin', '/usr/sbin'],
-                 'refreshonly' => 'true')
+                 'refreshonly' => 'true',
+                 'require'     => 'Service[mongodb]',
+                 'subscribe'   => "File[#{file}]")
       }
     end
   end
