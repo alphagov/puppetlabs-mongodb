@@ -2,11 +2,11 @@ require 'spec_helper'
 
 describe 'mongodb::user', :type => :define do
   let(:password) { 'some_password' }
+  let(:path) { '/root/puppet-mongodb' }
 
   context "user scripts directory" do
     describe "creates the default directory location" do
       let(:title) { 'creates directory for user js scripts' }
-      let(:path) { '/root/puppet-mongodb' }
       let(:params) {{
         :password => password,
       }}
@@ -23,16 +23,16 @@ describe 'mongodb::user', :type => :define do
 
     describe "allows user overriding of the user scripts directory" do
       let(:title) { 'creates directory for user js scripts' }
-      let(:path) { '/some_new_path' }
+      let(:some_new_path) { '/some_new_path' }
       let(:params) {{
         :password => password,
-        :js_dir   => path,
+        :js_dir   => some_new_path,
       }}
 
       it {
-        should contain_file(path).with(
+        should contain_file(some_new_path).with(
                  'ensure' => 'directory',
-                 'path'   => path,
+                 'path'   => some_new_path,
                  'owner'  => 'root',
                  'group'  => 'root',
                  'mode'   => '0700')
@@ -44,7 +44,6 @@ describe 'mongodb::user', :type => :define do
     describe "creates a default user create script for the 'test' database" do
       let(:title) { 'joe_bloggs' }
       let(:file) { "mongo_user-#{title}_test.js" }
-      let(:path) { '/root/puppet-mongodb' }
       let(:content) { "// File created by Puppet\ndb.addUser(\"#{title}\", \"#{password}\", []);\n" }
       let(:params) {{
         :password => password
@@ -65,7 +64,6 @@ describe 'mongodb::user', :type => :define do
       let(:title) { 'joe_bloggs' }
       let(:database) { 'some_db_i_haz' }
       let(:file) { "mongo_user-#{title}_#{database}.js" }
-      let(:path) { '/root/puppet-mongodb' }
       let(:content) { "// File created by Puppet\ndb.addUser(\"#{title}\", \"#{password}\", []);\n" }
       let(:params) {{
         :password => password,
@@ -89,7 +87,6 @@ describe 'mongodb::user', :type => :define do
       let(:title) { 'joe_bloggs' }
       let(:exec) { "mongo_user-#{title}_test" }
       let(:file) { "#{exec}.js" }
-      let(:path) { '/root/puppet-mongodb' }
       let(:params) {{
         :password => password
       }}
@@ -109,7 +106,6 @@ describe 'mongodb::user', :type => :define do
       let(:database) { 'some_database' }
       let(:exec) { "mongo_user-#{title}_#{database}" }
       let(:file) { "#{exec}.js" }
-      let(:path) { '/root/puppet-mongodb' }
       let(:params) {{
         :password => password,
         :db_name  => database
