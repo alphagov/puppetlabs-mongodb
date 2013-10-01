@@ -29,10 +29,10 @@ define mongodb::user (
   }
 
   exec { "mongo_user-${name}_${db_name}":
-      command     => "mongo ${db_host}:${db_port}/${db_name} ${js_dir}/${mongodb_script_user}",
-      require     => Service['mongodb'],
-      subscribe   => File[$mongodb_script_user],
-      path        => ['/usr/bin', '/usr/sbin'],
-      refreshonly => true,
+    command     => "mongo ${db_host}:${db_port}/${db_name} ${js_dir}/${mongodb_script_user}",
+    require     => Service['mongodb'],
+    subscribe   => File[$mongodb_script_user],
+    path        => ['/usr/bin', '/usr/sbin'],
+    refreshonly => true,
   }
 }
