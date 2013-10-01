@@ -1,8 +1,10 @@
 define mongodb::user (
   $password,
   $roles       = '[]',
+  $db_host     = '127.0.0.1',
+  $db_port     = '27017',
   $db_name     = 'test',
-  $js_dir      = '/root/puppetlabs-mongodb',
+  $js_dir      = '/root/puppet-mongodb',
   $ensure      = 'present'
   ) {
 
@@ -24,5 +26,13 @@ define mongodb::user (
     path    => "${js_dir}/${mongodb_script_user}",
     content => template('mongodb/user.js.erb'),
     require => File["${js_dir}"],
+  }
+
+  exec { "mongo_user-${name}_${db_name}":
+      command     => "mongo ${db_host}:${db_port}/${db_name} ${js_dir}/${mongodb_script_user}",
+      require     => Service['mongodb'],
+      subscribe   => File[$mongodb_script_user],
+      path        => ['/usr/bin', '/usr/sbin'],
+      refreshonly => true,
   }
 }

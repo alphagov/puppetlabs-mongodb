@@ -6,13 +6,12 @@ describe 'mongodb::user', :type => :define do
   context "user scripts directory" do
     describe "creates the default directory location" do
       let(:title) { 'creates directory for user js scripts' }
+      let(:path) { '/root/puppet-mongodb' }
       let(:params) {{
         :password => password,
       }}
 
       it {
-        path = '/root/puppetlabs-mongodb'
-
         should contain_file(path).with(
                  'ensure' => 'directory',
                  'path'   => path,
@@ -45,7 +44,7 @@ describe 'mongodb::user', :type => :define do
     describe "creates a default user create script for the 'test' database" do
       let(:title) { 'joe_bloggs' }
       let(:file) { "mongo_user-#{title}_test.js" }
-      let(:path) { '/root/puppetlabs-mongodb' }
+      let(:path) { '/root/puppet-mongodb' }
       let(:content) { "// File created by Puppet\ndb.addUser(\"#{title}\", \"#{password}\", []);\n" }
       let(:params) {{
         :password => password
@@ -66,7 +65,7 @@ describe 'mongodb::user', :type => :define do
       let(:title) { 'joe_bloggs' }
       let(:database) { 'some_db_i_haz' }
       let(:file) { "mongo_user-#{title}_#{database}.js" }
-      let(:path) { '/root/puppetlabs-mongodb' }
+      let(:path) { '/root/puppet-mongodb' }
       let(:content) { "// File created by Puppet\ndb.addUser(\"#{title}\", \"#{password}\", []);\n" }
       let(:params) {{
         :password => password,
@@ -81,6 +80,48 @@ describe 'mongodb::user', :type => :define do
                  'group'   => 'root',
                  'mode'    => '0600',
                  'content' => content)
+      }
+    end
+  end
+
+  context "creating users within mongo auth" do
+    describe "runs the user script to add a given user" do
+      let(:title) { 'joe_bloggs' }
+      let(:exec) { "mongo_user-#{title}_test" }
+      let(:file) { "#{exec}.js" }
+      let(:path) { '/root/puppet-mongodb' }
+      let(:params) {{
+        :password => password
+      }}
+
+      it {
+        should contain_exec(exec).with(
+                 'command'     => "mongo 127.0.0.1:27017/test /root/puppet-mongodb/#{file}",
+                 'require'     => 'Service[mongodb]',
+                 'subscribe'   => "File[#{file}]",
+                 'path'        => ['/usr/bin', '/usr/sbin'],
+                 'refreshonly' => 'true')
+      }
+    end
+
+    describe "runs the user script to add a user for the given database" do
+      let(:title) { 'joe_bloggs' }
+      let(:database) { 'some_database' }
+      let(:exec) { "mongo_user-#{title}_#{database}" }
+      let(:file) { "#{exec}.js" }
+      let(:path) { '/root/puppet-mongodb' }
+      let(:params) {{
+        :password => password,
+        :db_name  => database
+      }}
+
+      it {
+        should contain_exec(exec).with(
+                 'command'     => "mongo 127.0.0.1:27017/#{database} /root/puppet-mongodb/#{file}",
+                 'require'     => 'Service[mongodb]',
+                 'subscribe'   => "File[#{file}]",
+                 'path'        => ['/usr/bin', '/usr/sbin'],
+                 'refreshonly' => 'true')
       }
     end
   end
