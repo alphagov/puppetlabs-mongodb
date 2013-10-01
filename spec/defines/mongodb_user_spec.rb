@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'mongodb::user', :type => :define do
   let(:password) { 'some_password' }
-  let(:path) { '/root/puppet-mongodb' }
+  let(:path) { '/root/puppetlabs-mongodb' }
 
   context "user scripts directory" do
     describe "creates the default directory location" do
@@ -93,7 +93,7 @@ describe 'mongodb::user', :type => :define do
 
       it {
         should contain_exec(exec).with(
-                 'command'     => "mongo 127.0.0.1:27017/test /root/puppet-mongodb/#{file}",
+                 'command'     => "mongo 127.0.0.1:27017/test #{path}/#{file}",
                  'require'     => 'Service[mongodb]',
                  'subscribe'   => "File[#{file}]",
                  'path'        => ['/usr/bin', '/usr/sbin'],
@@ -113,7 +113,7 @@ describe 'mongodb::user', :type => :define do
 
       it {
         should contain_exec(exec).with(
-                 'command'     => "mongo 127.0.0.1:27017/#{database} /root/puppet-mongodb/#{file}",
+                 'command'     => "mongo 127.0.0.1:27017/#{database} #{path}/#{file}",
                  'require'     => 'Service[mongodb]',
                  'subscribe'   => "File[#{file}]",
                  'path'        => ['/usr/bin', '/usr/sbin'],

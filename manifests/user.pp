@@ -4,7 +4,7 @@ define mongodb::user (
   $db_host     = '127.0.0.1',
   $db_port     = '27017',
   $db_name     = 'test',
-  $js_dir      = '/root/puppet-mongodb',
+  $js_dir      = '/root/puppetlabs-mongodb',
   $ensure      = 'present'
   ) {
 
