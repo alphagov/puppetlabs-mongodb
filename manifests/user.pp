@@ -8,28 +8,28 @@ define mongodb::user (
   $ensure      = 'present'
   ) {
 
-  file { "${js_dir}":
+  file { $js_dir:
     ensure => directory,
-    path   => "${js_dir}",
+    path   => $js_dir,
     owner  => 'root',
     group  => 'root',
     mode   => '0700',
   }
 
   $mongodb_script_user = "mongo_user-${title}_${db_name}.js"
-
-  file { "${mongodb_script_user}":
+  file { $mongodb_script_user:
     ensure  => present,
     mode    => '0600',
     owner   => 'root',
     group   => 'root',
     path    => "${js_dir}/${mongodb_script_user}",
     content => template('mongodb/user.js.erb'),
-    require => File["${js_dir}"],
+    require => File[$js_dir],
   }
 
+  $database_host = "${db_host}:${db_port}/${db_name}"
   exec { "mongo_user-${name}_${db_name}":
-    command     => "mongo ${db_host}:${db_port}/${db_name} ${js_dir}/${mongodb_script_user}",
+    command     => "mongo ${database_host} ${js_dir}/${mongodb_script_user}",
     require     => Service['mongodb'],
     subscribe   => File[$mongodb_script_user],
     path        => ['/usr/bin', '/usr/sbin'],
