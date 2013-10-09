@@ -2,13 +2,15 @@ require 'spec_helper'
 
 describe 'mongodb::user', :type => :define do
   let(:password) { 'some_password' }
+  let(:database) { 'test' }
   let(:path) { '/root/puppetlabs-mongodb' }
 
   context "user scripts directory" do
     describe "creates the default directory location" do
       let(:title) { 'creates directory for user js scripts' }
       let(:params) {{
-        :password => password,
+        :db_name  => database,
+        :password => password
       }}
 
       it {
@@ -25,8 +27,9 @@ describe 'mongodb::user', :type => :define do
       let(:title) { 'creates directory for user js scripts' }
       let(:some_new_path) { '/some_new_path' }
       let(:params) {{
+        :db_name  => database,
         :password => password,
-        :js_dir   => some_new_path,
+        :js_dir   => some_new_path
       }}
 
       it {
@@ -46,6 +49,7 @@ describe 'mongodb::user', :type => :define do
       let(:file) { "mongo_user-#{title}_test.js" }
       let(:content) { "// File created by Puppet\ndb.addUser(\"#{title}\", \"#{password}\", []);\n" }
       let(:params) {{
+        :db_name  => database,
         :password => password
       }}
 
@@ -66,8 +70,8 @@ describe 'mongodb::user', :type => :define do
       let(:file) { "mongo_user-#{title}_#{database}.js" }
       let(:content) { "// File created by Puppet\ndb.addUser(\"#{title}\", \"#{password}\", []);\n" }
       let(:params) {{
-        :password => password,
-        :db_name  => database
+        :db_name  => database,
+        :password => password
       }}
 
       it {
@@ -88,6 +92,7 @@ describe 'mongodb::user', :type => :define do
       let(:exec) { "mongo_user-#{title}_test" }
       let(:file) { "#{exec}.js" }
       let(:params) {{
+        :db_name  => database,
         :password => password
       }}
 
@@ -107,8 +112,8 @@ describe 'mongodb::user', :type => :define do
       let(:exec) { "mongo_user-#{title}_#{database}" }
       let(:file) { "#{exec}.js" }
       let(:params) {{
-        :password => password,
-        :db_name  => database
+        :db_name  => database,
+        :password => password
       }}
 
       it {
